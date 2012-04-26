@@ -9,6 +9,12 @@
 #include<list>
 using namespace std;
 
+struct node
+{
+    int val;
+    node* next;
+};
+
 int nthToLast(list<int>& mylist, int nth)
 {
     list<int>::iterator it = mylist.end();
@@ -16,25 +22,41 @@ int nthToLast(list<int>& mylist, int nth)
     return *it;
 }
 
-int nthToLast2(list<int>& mylist, int nth)
+int nthToLast2(node* listhead, int nth)
 {
-    list<int>::iterator it1 = mylist.begin();
-    list<int>::iterator it2 = mylist.begin();
-    while(nth--) advance(it2, 1);
-    
-    while(it2 != mylist.end())
+    node* p1 = listhead;
+    node* p2 = listhead;
+
+    while(--nth) p2 = p2->next;
+
+    while(p2->next != NULL)
     {
-        advance(it1, 1);
-        advance(it2, 1);
+        p1 = p1->next;
+        p2 = p2->next;
     };
 
-    return *it1;
+    return p1->val;
 }
 
 int main()
 {
     int myints [] = {11, 22, 33, 34, 25, 18, 14, 29};
+
+    //method 1: use STL:list
     list<int> mylist(myints, myints + sizeof(myints) / sizeof(int));
-    cout<<nthToLast2(mylist, 6)<<endl;
+    cout<<nthToLast(mylist, 6)<<endl;
+    
+    //method 2: use normal linklist
+    node* listhead = new node();
+    listhead->next = NULL;
+    node* p = listhead;
+    for(int i = 0; i < 8; i++)
+    {
+        p->next = new node();
+        p->next->val = myints[i];
+        p->next->next = NULL;
+        p = p->next;
+    }
+    cout<<nthToLast2(listhead, 6)<<endl;
     return 0;
 }
